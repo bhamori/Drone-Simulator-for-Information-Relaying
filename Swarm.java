@@ -243,7 +243,10 @@ public class Swarm
 			System.out.println("Drone with the ID " + droneList.get(i) + " has been eliminated.");
 		}	
 		droneList.remove(i);
-		dataStored.remove(i);
+		if(dataStored.size() != 0)
+		{
+			dataStored.remove(i);
+		}
 	}
 	
 	//create a list from the received list of packets from information
