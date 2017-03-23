@@ -1,0 +1,28 @@
+NOTES:
+- Separate each input value by spaces
+- All input values must be on the same line
+- The object number is the integer next to the object name
+- EnemyUnit supports up to 5 sets of coordinates
+- EnemyUnit speed must be an integer value between 1 and 10
+
+Playground
+<window width (integer)> <window height(integer)>
+
+1 Rectangle
+<object number(integer)> <x position(double)> <y position(double)> <z position(double)> <width(integer)> <height(integer)>
+
+2 EnemyUnit
+<object number(integer)> <diameter(double)> <number of checkpoints(integer)> <shooting range(double)> <rounds per minute(double)> <loop(boolean)> <speed(integer)>
+<point ax(double)> <point ay(double)> <point az(double)> <point bx(double)> <point by(double)> <point bz(double)>
+
+3 Swarm
+<object number(integer)> <x position(double)> <y position(double)> <z position(double)> <number of drones(integer)>
+
+4 Base
+<object number(integer)> <x position(double)> <y position(double)> <z position(double)> <diameter(double)>
+
+5 Receiver
+<object number(integer)> <x position(double)> <y position(double)> <z position(double)> <diameter(double)>
+
+6 Transmitter
+<object number(integer)> <x position(double)> <y position(double)> <z position(double)> <diameter(double)>
