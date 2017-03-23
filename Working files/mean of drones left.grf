@@ -1,0 +1,51 @@
+;This file was created by Graph (http://www.padowan.dk)
+;Do not change this file from other programs.
+[Graph]
+Version = 4.4.2.543
+MinVersion = 2.5
+OS = Windows NT 6.2 
+
+[Axes]
+xMin = -16.8317742234633
+xMax = 31.7375832727254
+xTickUnit = 1
+xGridUnit = 2
+xAutoTick = 0
+xAutoGrid = 0
+xLabel = Number of drones at start
+yMin = -2.23204721961149
+yMax = 31.1189115944381
+yTickUnit = 1
+yGridUnit = 1
+yAutoTick = 0
+yAutoGrid = 0
+yLabel = Number of drones at receiver
+AxesColor = clBlue
+GridColor = 0x00FF9999
+ShowLegend = 1
+Radian = 1
+
+[PointSeries1]
+FillColor = clRed
+LineColor = clBlue
+Size = 5
+Style = 0
+LabelPosition = 1
+PointCount = 5
+Points = 30,20.6;15,7.5;10,1;25,17.2;20,11.6;
+LegendText = Series 1
+
+[Func1]
+FuncType = 0
+y = 0.978*x-7.98
+LegendText = f(x)=0.978*x-7.98; R²=0.99
+Color = clRed
+
+[Data]
+TextLabelCount = 0
+FuncCount = 1
+PointSeriesCount = 1
+ShadeCount = 0
+RelationCount = 0
+OleObjectCount = 0
+
