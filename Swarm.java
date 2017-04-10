@@ -20,10 +20,11 @@ public class Swarm
 	String dotColour = "BLUE";
 	int dotSize = 10;
 	
-	//arrays of coordinates and their correlating points
-	int[] listOfXCoordinates = new int[] {120, 190, 260, 330, 400, 500, 600, 670, 740, 810, 880, 950};
-	int[] listOfYCoordinates = new int[] {730, 710, 490, 470, 250, 50, 250, 470, 490, 710, 730, 950};
-	int[] listOfZCoordinates = new int[] {25, 30, 35, 35, 35, 35, 35, 35, 35, 30, 25, 20};
+	//arrays of coordinates
+	ArrayList<Integer> listOfXCoordinates = new ArrayList<Integer>();
+	ArrayList<Integer> listOfYCoordinates = new ArrayList<Integer>();
+	ArrayList<Integer> listOfZCoordinates = new ArrayList<Integer>();
+	
 	String[] points = new String[] {"A", "B", "C", "D", "E", "transmitter", "F", "G", "H", "I", "J", "receiver"};
 	
 	public int objectLayer;
@@ -53,10 +54,12 @@ public class Swarm
 	
 	boolean reached = false;
 	int numberOfDrones;
-	int energy = 1200;
+	int energy = 2500;
+	int energyAtStart = energy;
 	int id = 0;
 	int percent;
 	boolean isShot;
+	boolean defPath = true;
 	
 	//an individual drone's coords
 	public double[] droneX = new double[30];
@@ -76,7 +79,29 @@ public class Swarm
 	//create instances
 	Drone singleDrone = new Drone(true, energy, 10, id); //first drone (leader)
 	Information information = new Information(numberOfPackets, droneList.size());
-
+	missionCoords mc = new missionCoords();
+	
+	//set targets
+	public void targets()
+	{
+		if(mc.getConfirmation() == true)
+		{
+			defPath = false;
+			for(int i = 0; i < mc.getLength(); i++)
+			{
+				listOfXCoordinates.add(mc.getXCoord(i));
+				listOfYCoordinates.add(mc.getYCoord(i));
+				listOfZCoordinates.add(mc.getZCoord(i));
+			}
+		}
+		else
+		{
+			listOfXCoordinates.addAll(Arrays.asList(120, 190, 260, 330, 400, 500, 600, 670, 740, 810, 880, 950));
+			listOfYCoordinates.addAll(Arrays.asList(730, 710, 490, 470, 250, 50, 250, 470, 490, 710, 730, 950));
+			listOfZCoordinates.addAll(Arrays.asList(25, 30, 35, 35, 35, 35, 35, 35, 35, 30, 25, 20));
+		}
+	}
+	
 	
 	//getters
 	public double getXPosition()
@@ -313,12 +338,13 @@ public class Swarm
 	//create swarm
 	public Swarm(double x, double y, double z, int drones)
 	{
+		this.targets();
 		xPosition = x;
 		yPosition = y;
 		zPosition = z;
-		pathX = listOfXCoordinates[j];
-		pathY = listOfYCoordinates[j];
-		pathZ = listOfZCoordinates[j];
+		pathX = listOfXCoordinates.get(j);
+		pathY = listOfYCoordinates.get(j);
+		pathZ = listOfZCoordinates.get(j);
 		numberOfDrones = drones - 1;
 		
 
@@ -343,7 +369,10 @@ public class Swarm
 		int leaderDrone = (int)droneList.get(0); //Assign a leader drone based on the ID.
 		
 		System.out.println("The drones are all set, swarm is created. Now tracking energy level and destination points.");
-		System.out.println("Heading to " + points[j] + ".");
+		if(defPath == true)
+		{
+			System.out.println("Heading to " + points[j] + ".");
+		}
 	}
 	
 	
@@ -396,7 +425,6 @@ public class Swarm
 					moveY = diffY/diffZ;
 					moveZ = 1;
 				}
-
 				
 				if(xNeg == true)
 				{
@@ -414,23 +442,30 @@ public class Swarm
 					zNeg = false;
 				}
 				
-				this.setXPosition(this.getXPosition() + 2*moveX);
-				this.setYPosition(this.getYPosition() + 2*moveY);
+				this.setXPosition(this.getXPosition() + moveX);
+				this.setYPosition(this.getYPosition() + moveY);
 				this.setZPosition(this.getZPosition() + moveZ);
 				
 				this.setEnergy(energy - 1);
 				singleDrone.setEnergyLevel(energy - 1);
-				percent = (singleDrone.getEnergyLevel()*100)/1500;				
+				percent = (singleDrone.getEnergyLevel()*100)/2500;				
 			}
-			else if (j < points.length - 1)
+			else if (j < listOfXCoordinates.size() - 1)
 			{
 				j = j + 1;
-				this.setPathX(listOfXCoordinates[j]);
-				this.setPathY(listOfYCoordinates[j]);
-				this.setPathZ(listOfZCoordinates[j]);
+				this.setPathX(listOfXCoordinates.get(j));
+				this.setPathY(listOfYCoordinates.get(j));
+				this.setPathZ(listOfZCoordinates.get(j));
 				new dot(this.getPathX(), this.getPathY(), 15, 7, "BLUE");
-				System.out.println("Heading to " + points[j] + ", remaining energy:" + percent + "%");
 				
+				if(defPath == true)
+				{
+					System.out.println("Heading to " + points[j] + ", remaining energy:" + percent + "%");
+				}
+				else
+				{
+					System.out.println("Remaining energy:" + percent + "%");
+				}
 				if(this.getXPosition() == 500 && this.getYPosition() == 50)
 				{
 					System.out.println("Reached the transmitter.");
@@ -439,12 +474,17 @@ public class Swarm
 					System.out.println("Packets have been picked up.");
 				}
 			}
-			else
+			else if(this.getXPosition() == 950 && this.getYPosition() == 950)
 			{
 				reached = true;
 				this.recreateInformation();
 				System.out.println("Remaining drones: " + droneList.size());
 				System.out.println("Remaining energy:" + percent + "%");
+			}
+			else
+			{
+				reached = true;
+				System.out.println("There are no more target locations left, however the drones have not arrived at the receiver.");
 			}
 		}
 		else if(singleDrone.getEnergyLevel() <= 0)
